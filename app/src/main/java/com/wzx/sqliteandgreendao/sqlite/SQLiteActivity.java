@@ -1,7 +1,7 @@
-package com.wzx.sqliteandgreendao;
+package com.wzx.sqliteandgreendao.sqlite;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -13,22 +13,22 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.anye.greendao.gen.DaoSession;
-import com.anye.greendao.gen.NoteDao;
-
-import org.greenrobot.greendao.query.Query;
+import com.wzx.sqliteandgreendao.Note;
+import com.wzx.sqliteandgreendao.NoteType;
+import com.wzx.sqliteandgreendao.NotesAdapter;
+import com.wzx.sqliteandgreendao.R;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class GreenDaoActivity extends AppCompatActivity {
+public class SQLiteActivity extends AppCompatActivity {
 
     private EditText editText;
     private View addNoteButton;
 
     private NoteDao noteDao;
-    private Query<Note> notesQuery;
+    private List<Note> noteList;
     private NotesAdapter notesAdapter;
 
     @Override
@@ -38,19 +38,21 @@ public class GreenDaoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_data_base);
 
         setUpViews();
-        // get the note DAO
-        DaoSession daoSession = ((App) getApplication()).getDaoSession();
-        noteDao = daoSession.getNoteDao();
-        // query all notes, sorted a-z by their text
-        notesQuery = noteDao.queryBuilder().orderAsc(NoteDao.Properties.Text).build();
-//        /*时间排序*/
-//        notesQuery = noteDao.queryBuilder().orderAsc(NoteDao.Properties.Date).build();
+
+        noteDao = new NoteDao(this);
+
+//        if (!noteDao.isDataExist()){
+//            noteDao.initTable();
+//        }
+
         updateNotes();
     }
 
     private void updateNotes() {
-        List<Note> notes = notesQuery.list();
-        notesAdapter.setNotes(notes);
+        List<Note> notes = noteDao.getAllDate();
+        if (notes != null) {
+            notesAdapter.setNotes(notes);
+        }
     }
 
     protected void setUpViews() {
@@ -105,7 +107,7 @@ public class GreenDaoActivity extends AppCompatActivity {
         queryNote();
     }
 
-    public void onLikeQueryButtonClick(View view){
+    public void onLikeQueryButtonClick(View view) {
         likeQueryNote();
     }
 
@@ -130,30 +132,28 @@ public class GreenDaoActivity extends AppCompatActivity {
     }
 
     private void queryNote() {
-        /*具体查询*/
-        Query query = noteDao.queryBuilder().where(
-                NoteDao.Properties.Text.eq(""))
-                .build();
-
+        /*查询*/
         String noteText = editText.getText().toString();
         editText.setText("");
 
-        List<Note> notes = query.setParameter(0, noteText).list();
-        notesAdapter.setNotes(notes);
+        List<Note> notes = noteDao.query(noteText);
+        if (notes != null) {
+            notesAdapter.setNotes(notes);
+        }
+
     }
 
-    private void likeQueryNote(){
+    private void likeQueryNote() {
         /*模糊查询*/
-        Query likeQuery = noteDao.queryBuilder().where(
-                NoteDao.Properties.Text.like(""))
-                .orderAsc(NoteDao.Properties.Text)
-                .build();
 
-        String noteText = "%"+editText.getText().toString()+"%";
+        String noteText = "%" + editText.getText().toString() + "%";
         editText.setText("");
 
-        List<Note> notes = likeQuery.setParameter(0, noteText).list();
-        notesAdapter.setNotes(notes);
+        List<Note> notes = noteDao.likeQuery(noteText);
+        if (notes != null) {
+            notesAdapter.setNotes(notes);
+        }
+
     }
 
     private void updateNote(Note note) {
@@ -161,6 +161,7 @@ public class GreenDaoActivity extends AppCompatActivity {
         String comment = "Update on " + df.format(new Date());
         /*更新*/
         note.setText("更新" + note.getText());
+
         noteDao.update(note);
         note.setDate(new Date());
         note.setComment(comment);
@@ -174,7 +175,7 @@ public class GreenDaoActivity extends AppCompatActivity {
             Note note = notesAdapter.getNote(position);
             Long noteId = note.getId();
             /*删除*/
-            noteDao.deleteByKey(noteId);
+            noteDao.delete(noteId);
             Log.d("DaoExample", "Deleted note, ID: " + noteId);
             updateNotes();
         }

@@ -19,10 +19,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".GreenDaoActivity">
+        <activity android:name=".greendao.GreenDaoActivity">
         </activity>
 
-        <activity android:name=".SQLiteActivity">
+        <activity android:name=".sqlite.SQLiteActivity">
         </activity>
     </application>
 

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.wzx.sqliteandgreendao.greendao.GreenDaoActivity;
+import com.wzx.sqliteandgreendao.sqlite.SQLiteActivity;
+
 /**
  * 描述 TODO
  * Created by 王治湘 on 2017/10/23.

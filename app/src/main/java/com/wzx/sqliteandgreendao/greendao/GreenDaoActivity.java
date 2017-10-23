@@ -1,7 +1,7 @@
-package com.wzx.sqliteandgreendao;
+package com.wzx.sqliteandgreendao.greendao;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,6 +15,11 @@ import android.widget.TextView;
 
 import com.anye.greendao.gen.DaoSession;
 import com.anye.greendao.gen.NoteDao;
+import com.wzx.sqliteandgreendao.App;
+import com.wzx.sqliteandgreendao.Note;
+import com.wzx.sqliteandgreendao.NoteType;
+import com.wzx.sqliteandgreendao.NotesAdapter;
+import com.wzx.sqliteandgreendao.R;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -22,7 +27,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class SQLiteActivity extends AppCompatActivity {
+public class GreenDaoActivity extends AppCompatActivity {
 
     private EditText editText;
     private View addNoteButton;
