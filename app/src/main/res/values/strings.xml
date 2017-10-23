@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SQLiteAndGReenDao</string>
+
+    <string name="example_sqlite">how to use sqlite</string>
+    <string name="example_greendao">how to use green</string>
+    <string name="enter_new_note">Enter new note</string>
+    <string name="add">Add</string>
+    <string name="query">Query</string>
+    <string name="likequery">LikeQuery</string>
+    <string name="click_to_remove">Click a note to remove it \nLongPress a note to update it</string>
+</resources>
